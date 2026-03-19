@@ -34,8 +34,8 @@ bash aro/teardown.sh
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `RESOURCE_GROUP` | `coco-rg` | Azure resource group |
-| `CLUSTER_NAME` | `coco-kserve` | ARO cluster name |
+| `RESOURCE_GROUP` | `${USER}-coco-rg` | Azure resource group |
+| `CLUSTER_NAME` | `${USER}-coco` | ARO cluster name |
 | `CLUSTER_RESOURCE_GROUP` | `${RESOURCE_GROUP}-managed` | ARO-managed resource group |
 | `LOCATION` | `eastus2` | Azure region |
 | `WORKER_VM_SIZE` | `Standard_D8s_v5` | Worker node VM size |
@@ -50,6 +50,7 @@ bash aro/teardown.sh
 | `aro/setup.sh` | Full end-to-end setup |
 | `aro/create-aro.sh` | Create ARO cluster only |
 | `aro/teardown.sh` | Delete cluster and resource group |
+| `aro/status.sh` | Check cluster and CoCo component status |
 | `aro/install-trustee.sh` | Install Trustee + cert-manager operators |
 | `aro/configure-trustee.sh` | Configure Trustee with keys, policies, initdata |
 | `aro/install-osc.sh` | Install OSC operator |

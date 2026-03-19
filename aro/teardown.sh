@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-RESOURCE_GROUP=${RESOURCE_GROUP:-"coco-rg"}
-CLUSTER_NAME=${CLUSTER_NAME:-"coco-kserve"}
+RESOURCE_GROUP=${RESOURCE_GROUP:-"${USER}-coco-rg"}
+CLUSTER_NAME=${CLUSTER_NAME:-"${USER}-coco"}
 
 echo "################################################"
 echo "Tearing down ARO cluster"

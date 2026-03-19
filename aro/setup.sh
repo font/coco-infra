@@ -4,8 +4,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Configuration
-RESOURCE_GROUP=${RESOURCE_GROUP:-"coco-rg"}
-CLUSTER_NAME=${CLUSTER_NAME:-"coco-kserve"}
+RESOURCE_GROUP=${RESOURCE_GROUP:-"${USER}-coco-rg"}
+CLUSTER_NAME=${CLUSTER_NAME:-"${USER}-coco"}
 SKIP_CLUSTER=${SKIP_CLUSTER:-"false"}
 
 echo "################################################"
