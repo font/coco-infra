@@ -55,3 +55,13 @@ bash aro/teardown.sh
 | `aro/configure-trustee.sh` | Configure Trustee with keys, policies, initdata |
 | `aro/install-osc.sh` | Install OSC operator |
 | `aro/configure-osc.sh` | Configure OSC with peer pods and KataConfig |
+
+### Claude Code Skills
+
+The following [Claude Code](https://claude.com/claude-code) skills are available in `.claude/commands/`:
+
+| Skill | Description |
+|-------|-------------|
+| `/coco-create` | Create ARO cluster with full CoCo setup |
+| `/coco-destroy` | Tear down cluster and clean up all resource groups |
+| `/coco-status` | Check cluster and CoCo component status |
