@@ -76,7 +76,7 @@ When running scripts individually (not via `setup.sh`), order matters:
 
 ### Claude Code Skills
 
-The following [Claude Code](https://claude.com/claude-code) skills are available in `.claude/commands/`:
+The following [Claude Code](https://claude.com/claude-code) skills are available in `.claude/skills/`:
 
 | Skill | Description |
 |-------|-------------|

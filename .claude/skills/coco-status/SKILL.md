@@ -1,3 +1,8 @@
+---
+description: Check the status of the ARO cluster and CoCo components
+user_invocable: true
+---
+
 Check the status of the ARO cluster and CoCo components.
 
 1. Log in to the cluster if not already logged in:

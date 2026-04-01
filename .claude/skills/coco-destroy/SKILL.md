@@ -1,3 +1,8 @@
+---
+description: Tear down ARO cluster and clean up all Azure resource groups
+user_invocable: true
+---
+
 Destroy the ARO cluster and clean up all Azure resource groups.
 
 Steps:

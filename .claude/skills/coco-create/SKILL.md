@@ -1,3 +1,8 @@
+---
+description: Create an ARO cluster with full CoCo (Confidential Containers) setup
+user_invocable: true
+---
+
 Create an ARO cluster with full CoCo (Confidential Containers) setup.
 
 Run the setup script with the standard environment variables:
