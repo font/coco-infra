@@ -9,6 +9,8 @@ if [[ "$INITDATA_PATH" != /* ]]; then
   INITDATA_PATH="$(cd "$(dirname "$INITDATA_PATH")" && pwd)/$(basename "$INITDATA_PATH")"
 fi
 OSC_ENV=${OSC_ENV:-"rhdp"}
+AZURE_INSTANCE_SIZE=${AZURE_INSTANCE_SIZE:-"Standard_DC4as_v5"}
+AZURE_INSTANCE_SIZES=${AZURE_INSTANCE_SIZES:-"Standard_DC2as_v5,Standard_DC4as_v5,Standard_DC8as_v5,Standard_DC16as_v5,Standard_DC32as_v5"}
 
 if [[ ! -f "$INITDATA_PATH" ]]; then
   echo "ERROR: INITDATA file not found: $INITDATA_PATH" >&2
@@ -191,8 +193,8 @@ metadata:
 data:
   CLOUD_PROVIDER: "azure"
   VXLAN_PORT: "9000"
-  AZURE_INSTANCE_SIZES: "Standard_DC2as_v5,Standard_DC2es_v5,Standard_DC4as_v5,Standard_DC4es_v5,Standard_DC8es_v5,Standard_DC8as_v5"
-  AZURE_INSTANCE_SIZE: "Standard_DC4as_v5"
+  AZURE_INSTANCE_SIZES: "${AZURE_INSTANCE_SIZES}"
+  AZURE_INSTANCE_SIZE: "${AZURE_INSTANCE_SIZE}"
   AZURE_RESOURCE_GROUP: "${CLUSTER_RESOURCE_GROUP}"
   AZURE_REGION: "${AZURE_REGION}"
   AZURE_SUBNET_ID: "${AZURE_SUBNET_ID}"

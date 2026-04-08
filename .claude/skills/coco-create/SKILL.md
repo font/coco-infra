@@ -21,7 +21,8 @@ This runs 5 steps in order:
 Before running, confirm with the user:
 - Resource group: ifont-coco-rg
 - Cluster name: coco-kserve
-- Region: eastus2
+- Region (LOCATION): default eastus2, can override (e.g., westus for cheaper SEV-SNP testing)
+- Peer pod VM size (AZURE_INSTANCE_SIZE): default Standard_DC4as_v5, use Standard_NCC40ads_H100_v5 for GPU
 
 The cluster creation takes ~40 minutes. Run the setup in the background and notify when complete.
 
