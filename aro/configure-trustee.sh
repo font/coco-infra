@@ -34,8 +34,9 @@ echo ""
 
 echo "################# Configuring Trustee ###############################"
 
-mkdir -p trustee
-cd trustee
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+mkdir -p "$SCRIPT_DIR/trustee"
+cd "$SCRIPT_DIR/trustee"
 
 DOMAIN=$(oc get ingress.config/cluster -o jsonpath='{.spec.domain}')
 NS=trustee-operator-system
