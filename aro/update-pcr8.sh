@@ -7,12 +7,16 @@ set -e
 
 echo "=== Calculating PCR8 from current INITDATA ==="
 
-INITDATA_RAW=$(oc get configmap peer-pods-cm \
+# Write to a temp file to avoid shell variable mangling (e.g., trailing
+# newline stripping), which would produce wrong hashes.
+TMPFILE=$(mktemp)
+trap "rm -f $TMPFILE" EXIT
+oc get configmap peer-pods-cm \
   -n openshift-sandboxed-containers-operator \
-  -o jsonpath='{.data.INITDATA}' | base64 -d | gunzip)
+  -o jsonpath='{.data.INITDATA}' | base64 -d | gunzip > "$TMPFILE"
 
 initial_pcr=0000000000000000000000000000000000000000000000000000000000000000
-hash=$(echo -n "$INITDATA_RAW" | sha256sum | cut -d' ' -f1)
+hash=$(sha256sum "$TMPFILE" | cut -d' ' -f1)
 PCR8_HASH=$(echo -n "$initial_pcr$hash" | xxd -r -p | sha256sum | cut -d' ' -f1)
 
 echo "  New PCR8: $PCR8_HASH"
