@@ -75,6 +75,7 @@ When running scripts individually (not via `setup.sh`), order matters:
 | `aro/configure-trustee.sh` | Configure Trustee with keys, policies, initdata |
 | `aro/install-osc.sh` | Install OSC operator |
 | `aro/configure-osc.sh` | Configure OSC with peer pods and KataConfig |
+| `aro/update-pcr8.sh` | Recalculate PCR8 and update Trustee reference values |
 
 ### Claude Code Skills
 
