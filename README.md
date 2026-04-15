@@ -22,12 +22,10 @@ CoCo peer pods require confidential VMs (AMD SEV-SNP or Intel TDX). Availability
 | `DC*as_v5` (non-GPU) | AMD SEV-SNP | `eastus`, `westus` | ~$0.19-6.14/hr |
 | `DC*es_v6` (non-GPU) | Intel TDX | `westus`, `westus3` | similar to DC*as_v5 |
 | `NCC40ads_H100_v5` (GPU) | AMD SEV-SNP | `eastus2`, `centralus`, `southcentralus` | ~$8.90/hr |
-| `DC*v3` (non-GPU) | Intel SGX | `eastus2` | N/A (not CoCo compatible) |
 
 - **`eastus2`** has H100 GPUs but no cheap confidential VM option — use for GPU testing only
 - **`westus`** has both AMD SEV-SNP (`DC*as_v5`) and Intel TDX (`DC*es_v6`) — use for non-GPU e2e testing
 - **`eastus`** has AMD SEV-SNP only
-- Intel SGX (`DC*v3`) is not compatible with CoCo peer pods
 
 ### Quick Start
 
