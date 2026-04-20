@@ -57,11 +57,23 @@ metadata:
   namespace: openshift-sandboxed-containers-operator
 spec:
   channel: stable
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: sandboxed-containers-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
+  startingCSV: sandboxed-containers-operator.v1.11.1
 EOF
+
+echo "Approving OSC install plan..."
+for i in \$(seq 1 30); do
+  PLAN=\$(oc get installplan -n openshift-sandboxed-containers-operator -o jsonpath='{.items[?(@.spec.approved==false)].metadata.name}' 2>/dev/null)
+  if [ -n "\$PLAN" ]; then
+    echo "\$PLAN" | xargs -r oc patch installplan -n openshift-sandboxed-containers-operator --type merge -p '{"spec":{"approved":true}}'
+    break
+  fi
+  echo "Waiting for install plan... (\$i/30)"
+  sleep 10
+done
 
 echo "############################ Wait for OSC ########################"
 wait_for_deployment controller-manager openshift-sandboxed-containers-operator || exit 1
