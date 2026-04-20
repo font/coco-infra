@@ -58,11 +58,23 @@ metadata:
   namespace: trustee-operator-system
 spec:
   channel: stable
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: trustee-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
+  startingCSV: trustee-operator.v1.0.0
 EOF
+
+echo "Approving Trustee install plan..."
+for i in \$(seq 1 30); do
+  PLAN=\$(oc get installplan -n trustee-operator-system -o jsonpath='{.items[?(@.spec.approved==false)].metadata.name}' 2>/dev/null)
+  if [ -n "\$PLAN" ]; then
+    echo "\$PLAN" | xargs -r oc patch installplan -n trustee-operator-system --type merge -p '{"spec":{"approved":true}}'
+    break
+  fi
+  echo "Waiting for install plan... (\$i/30)"
+  sleep 10
+done
 
 echo "############################ Install cert-manager ########################"
 oc new-project cert-manager-operator || oc project cert-manager-operator
