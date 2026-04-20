@@ -7,7 +7,8 @@ CLUSTER_NAME=${CLUSTER_NAME:-"${USER}-coco"}
 CLUSTER_RESOURCE_GROUP=${CLUSTER_RESOURCE_GROUP:-"${RESOURCE_GROUP}-managed"}
 LOCATION=${LOCATION:-"eastus2"}
 VNET_NAME=${VNET_NAME:-"${CLUSTER_NAME}-vnet"}
-WORKER_VM_SIZE=${WORKER_VM_SIZE:-"Standard_D8s_v5"}
+MASTER_VM_SIZE=${MASTER_VM_SIZE:-"Standard_D8s_v3"}
+WORKER_VM_SIZE=${WORKER_VM_SIZE:-"Standard_D4s_v5"}
 WORKER_COUNT=${WORKER_COUNT:-3}
 ARO_VERSION=${ARO_VERSION:-"4.19.20"}
 SP_CREDENTIALS=${SP_CREDENTIALS:-"$HOME/.azure/osServicePrincipal.json"}
@@ -33,6 +34,7 @@ echo "  Resource group: $RESOURCE_GROUP"
 echo "  Cluster name:   $CLUSTER_NAME"
 echo "  Location:       $LOCATION"
 echo "  Version:        $ARO_VERSION"
+echo "  Master VM size: $MASTER_VM_SIZE"
 echo "  Worker VM size: $WORKER_VM_SIZE"
 echo "  Worker count:   $WORKER_COUNT"
 echo "  Managed RG:     $CLUSTER_RESOURCE_GROUP"
@@ -80,6 +82,7 @@ az aro create \
   --master-subnet master-subnet \
   --worker-subnet worker-subnet \
   --version "$ARO_VERSION" \
+  --master-vm-size "$MASTER_VM_SIZE" \
   --worker-vm-size "$WORKER_VM_SIZE" \
   --worker-count "$WORKER_COUNT" \
   --cluster-resource-group "$CLUSTER_RESOURCE_GROUP" \
