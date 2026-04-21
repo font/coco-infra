@@ -65,13 +65,13 @@ spec:
 EOF
 
 echo "Approving OSC install plan..."
-for i in \$(seq 1 30); do
-  PLAN=\$(oc get installplan -n openshift-sandboxed-containers-operator -o jsonpath='{.items[?(@.spec.approved==false)].metadata.name}' 2>/dev/null)
-  if [ -n "\$PLAN" ]; then
-    echo "\$PLAN" | xargs -r oc patch installplan -n openshift-sandboxed-containers-operator --type merge -p '{"spec":{"approved":true}}'
+for i in $(seq 1 30); do
+  PLAN=$(oc get installplan -n openshift-sandboxed-containers-operator -o jsonpath='{.items[?(@.spec.approved==false)].metadata.name}' 2>/dev/null)
+  if [ -n "$PLAN" ]; then
+    echo "$PLAN" | xargs -r oc patch installplan -n openshift-sandboxed-containers-operator --type merge -p '{"spec":{"approved":true}}'
     break
   fi
-  echo "Waiting for install plan... (\$i/30)"
+  echo "Waiting for install plan... ($i/30)"
   sleep 10
 done
 
