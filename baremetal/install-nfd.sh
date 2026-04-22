@@ -72,6 +72,26 @@ for i in $(seq 1 30); do
 done
 
 echo ""
+echo "=== Creating NodeFeatureRule for Intel TDX ==="
+
+oc apply -f - <<EOF
+apiVersion: nfd.openshift.io/v1alpha1
+kind: NodeFeatureRule
+metadata:
+  name: intel-tdx
+spec:
+  rules:
+    - name: intel-tdx-enabled
+      labels:
+        intel.feature.node.kubernetes.io/tdx: "true"
+      matchFeatures:
+        - feature: cpu.security
+          matchExpressions:
+            tdx.enabled:
+              op: IsTrue
+EOF
+
+echo ""
 echo "=== Creating NodeFeatureRule for NVIDIA GPUs ==="
 
 oc apply -f - <<EOF
