@@ -21,7 +21,7 @@ if ! oc whoami &>/dev/null; then
   exit 1
 fi
 
-TOTAL_STEPS=6
+TOTAL_STEPS=7
 if [[ "$SKIP_GPU" == "true" ]]; then
   TOTAL_STEPS=$((TOTAL_STEPS - 1))
 fi
@@ -38,36 +38,41 @@ else
   TEE_TYPE="$TEE_TYPE" bash "$SCRIPT_DIR/configure-machineconfig.sh"
 fi
 
-# Step 2: Install Trustee + cert-manager
+# Step 2: Install NFD (required before OSC for TEE detection)
+STEP=$((STEP + 1))
+echo ""
+echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing NFD ==="
+bash "$SCRIPT_DIR/install-nfd.sh"
+
+# Step 3: Install Trustee + cert-manager
 STEP=$((STEP + 1))
 echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing Trustee + cert-manager ==="
 bash "$SCRIPT_DIR/../common/install-trustee.sh"
 
-# Step 3: Configure Trustee
+# Step 4: Configure Trustee
 STEP=$((STEP + 1))
 echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Configuring Trustee ==="
 TRUSTEE_DIR="$SCRIPT_DIR/trustee" bash "$SCRIPT_DIR/../common/configure-trustee.sh"
 
-# Step 4: Install OSC
+# Step 5: Install OSC
 STEP=$((STEP + 1))
 echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing OSC ==="
 bash "$SCRIPT_DIR/../common/install-osc.sh"
 
-# Step 5: Configure OSC for bare metal confidential containers
+# Step 6: Configure OSC for bare metal confidential containers
 STEP=$((STEP + 1))
 echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Configuring OSC ==="
 bash "$SCRIPT_DIR/configure-osc.sh"
 
-# Step 6: Install NFD + GPU Operator (optional)
+# Step 7: Install GPU Operator (optional)
 if [[ "$SKIP_GPU" != "true" ]]; then
   STEP=$((STEP + 1))
   echo ""
-  echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing NFD + GPU Operator ==="
-  bash "$SCRIPT_DIR/install-nfd.sh"
+  echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing GPU Operator ==="
   bash "$SCRIPT_DIR/install-gpu.sh"
 fi
 

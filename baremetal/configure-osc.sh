@@ -34,7 +34,7 @@ metadata:
   name: example-kataconfig
 spec:
   enablePeerPods: false
-  checkNodeEligibility: true
+  checkNodeEligibility: false
   logLevel: info
 EOF
 
