@@ -1,0 +1,13 @@
+apiVersion: v1beta1
+kind: AgentConfig
+metadata:
+  name: ${CLUSTER_NAME}
+rendezvousIP: ${RENDEZVOUS_IP}
+hosts:
+  - hostname: ${HOST_NAME}
+    role: master
+    rootDeviceHints:
+      deviceName: ${ROOT_DEVICE}
+    interfaces:
+      - name: ${IFACE_NAME}
+        macAddress: "${IFACE_MAC}"
