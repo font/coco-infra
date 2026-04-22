@@ -21,7 +21,7 @@ if ! oc whoami &>/dev/null; then
   exit 1
 fi
 
-TOTAL_STEPS=5
+TOTAL_STEPS=6
 if [[ "$SKIP_GPU" == "true" ]]; then
   TOTAL_STEPS=$((TOTAL_STEPS - 1))
 fi
@@ -44,19 +44,25 @@ echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing Trustee + cert-manager ==="
 bash "$SCRIPT_DIR/../common/install-trustee.sh"
 
-# Step 3: Install OSC
+# Step 3: Configure Trustee
+STEP=$((STEP + 1))
+echo ""
+echo "=== Step ${STEP}/${TOTAL_STEPS}: Configuring Trustee ==="
+TRUSTEE_DIR="$SCRIPT_DIR/trustee" bash "$SCRIPT_DIR/../common/configure-trustee.sh"
+
+# Step 4: Install OSC
 STEP=$((STEP + 1))
 echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Installing OSC ==="
 bash "$SCRIPT_DIR/../common/install-osc.sh"
 
-# Step 4: Configure OSC for bare metal confidential containers
+# Step 5: Configure OSC for bare metal confidential containers
 STEP=$((STEP + 1))
 echo ""
 echo "=== Step ${STEP}/${TOTAL_STEPS}: Configuring OSC ==="
 bash "$SCRIPT_DIR/configure-osc.sh"
 
-# Step 5: Install NFD + GPU Operator (optional)
+# Step 6: Install NFD + GPU Operator (optional)
 if [[ "$SKIP_GPU" != "true" ]]; then
   STEP=$((STEP + 1))
   echo ""

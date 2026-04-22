@@ -38,7 +38,7 @@ bash "$SCRIPT_DIR/install-trustee.sh"
 # Step 3: Configure Trustee
 echo ""
 echo "=== Step 3/5: Configuring Trustee ==="
-TRUSTEE_ENV=gen bash "$SCRIPT_DIR/configure-trustee.sh"
+TRUSTEE_ENV=gen TRUSTEE_DIR="$SCRIPT_DIR/trustee" bash "$SCRIPT_DIR/../common/configure-trustee.sh"
 
 # Step 4: Install OSC
 echo ""
