@@ -33,7 +33,7 @@ fi
 # Step 2: Install Trustee + cert-manager
 echo ""
 echo "=== Step 2/5: Installing Trustee + cert-manager ==="
-bash "$SCRIPT_DIR/install-trustee.sh"
+TRUSTEE_CSV=trustee-operator.v1.0.0 TRUSTEE_APPROVAL=Manual bash "$SCRIPT_DIR/../common/install-trustee.sh"
 
 # Step 3: Configure Trustee
 echo ""
@@ -43,7 +43,7 @@ TRUSTEE_ENV=gen TRUSTEE_DIR="$SCRIPT_DIR/trustee" bash "$SCRIPT_DIR/../common/co
 # Step 4: Install OSC
 echo ""
 echo "=== Step 4/5: Installing OSC ==="
-bash "$SCRIPT_DIR/install-osc.sh"
+OSC_CSV=sandboxed-containers-operator.v1.11.1 OSC_APPROVAL=Manual bash "$SCRIPT_DIR/../common/install-osc.sh"
 
 # Step 5: Configure OSC
 echo ""
