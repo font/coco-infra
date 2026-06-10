@@ -18,6 +18,20 @@ echo ""
 echo "=== Node ==="
 oc get nodes -o custom-columns=NAME:.metadata.name,STATUS:.status.conditions[-1].type,VERSION:.status.nodeInfo.kubeletVersion,KERNEL:.status.nodeInfo.kernelVersion,OS:.status.nodeInfo.osImage
 
+# Host / TDX
+echo ""
+echo "=== Host / TDX ==="
+HOST=$(oc get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+if ssh -q -o ConnectTimeout=3 core@"$HOST" true 2>/dev/null; then
+  BIOS_VERSION=$(ssh -q core@"$HOST" "sudo dmidecode -s bios-version" 2>/dev/null)
+  BIOS_DATE=$(ssh -q core@"$HOST" "sudo dmidecode -s bios-release-date" 2>/dev/null)
+  TDX_MODULE=$(ssh -q core@"$HOST" "dmesg | grep 'TDX module'" 2>/dev/null | sed 's/.*TDX module //')
+  echo "  BIOS: ${BIOS_VERSION:-unknown} (${BIOS_DATE:-unknown})"
+  echo "  TDX module: ${TDX_MODULE:-not found}"
+else
+  echo "  SSH to $HOST not available"
+fi
+
 # Extended resources
 echo ""
 echo "=== Extended Resources ==="
