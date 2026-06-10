@@ -26,8 +26,21 @@ if ssh -q -o ConnectTimeout=3 core@"$HOST" true 2>/dev/null; then
   BIOS_VERSION=$(ssh -q core@"$HOST" "sudo dmidecode -s bios-version" 2>/dev/null)
   BIOS_DATE=$(ssh -q core@"$HOST" "sudo dmidecode -s bios-release-date" 2>/dev/null)
   TDX_MODULE=$(ssh -q core@"$HOST" "dmesg | grep 'TDX module'" 2>/dev/null | sed 's/.*TDX module //')
+  TDX_INIT=$(ssh -q core@"$HOST" "dmesg | grep -c 'tdx: module initialized'" 2>/dev/null)
   echo "  BIOS: ${BIOS_VERSION:-unknown} (${BIOS_DATE:-unknown})"
-  echo "  TDX module: ${TDX_MODULE:-not found}"
+  if [[ -z "$TDX_MODULE" ]]; then
+    echo "  TDX module: NOT FOUND [WARNING]"
+  else
+    TDX_VER=$(echo "$TDX_MODULE" | awk -F'[, ]' '{print $1}')
+    TDX_MIN="1.5.16"
+    if [[ "$(printf '%s\n' "$TDX_MIN" "$TDX_VER" | sort -V | head -1)" != "$TDX_MIN" ]]; then
+      echo "  TDX module: $TDX_MODULE [WARNING: below minimum $TDX_MIN]"
+    elif [[ "$TDX_INIT" -eq 0 ]]; then
+      echo "  TDX module: $TDX_MODULE [WARNING: not initialized]"
+    else
+      echo "  TDX module: $TDX_MODULE"
+    fi
+  fi
 else
   echo "  SSH to $HOST not available"
 fi
