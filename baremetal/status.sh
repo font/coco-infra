@@ -18,28 +18,45 @@ echo ""
 echo "=== Node ==="
 oc get nodes -o custom-columns=NAME:.metadata.name,STATUS:.status.conditions[-1].type,VERSION:.status.nodeInfo.kubeletVersion,KERNEL:.status.nodeInfo.kernelVersion,OS:.status.nodeInfo.osImage
 
-# Host / TDX
+# Host / TEE
 echo ""
-echo "=== Host / TDX ==="
+echo "=== Host / TEE ==="
 HOST=$(oc get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
 if ssh -q -o ConnectTimeout=3 core@"$HOST" true 2>/dev/null; then
   BIOS_VERSION=$(ssh -q core@"$HOST" "sudo dmidecode -s bios-version" 2>/dev/null)
   BIOS_DATE=$(ssh -q core@"$HOST" "sudo dmidecode -s bios-release-date" 2>/dev/null)
-  TDX_MODULE=$(ssh -q core@"$HOST" "dmesg | grep 'TDX module'" 2>/dev/null | sed 's/.*TDX module //')
-  TDX_INIT=$(ssh -q core@"$HOST" "dmesg | grep -c 'tdx: module initialized'" 2>/dev/null)
+  CPU_VENDOR=$(ssh -q core@"$HOST" "grep -m1 vendor_id /proc/cpuinfo" 2>/dev/null | awk '{print $3}')
   echo "  BIOS: ${BIOS_VERSION:-unknown} (${BIOS_DATE:-unknown})"
-  if [[ -z "$TDX_MODULE" ]]; then
-    echo "  TDX module: NOT FOUND [WARNING]"
-  else
-    TDX_VER=$(echo "$TDX_MODULE" | awk -F'[, ]' '{print $1}')
-    TDX_MIN="1.5.16"
-    if [[ "$(printf '%s\n' "$TDX_MIN" "$TDX_VER" | sort -V | head -1)" != "$TDX_MIN" ]]; then
-      echo "  TDX module: $TDX_MODULE [WARNING: below minimum $TDX_MIN]"
-    elif [[ "$TDX_INIT" -eq 0 ]]; then
-      echo "  TDX module: $TDX_MODULE [WARNING: not initialized]"
+  echo "  CPU: ${CPU_VENDOR:-unknown}"
+
+  if [[ "$CPU_VENDOR" == "GenuineIntel" ]]; then
+    TDX_MODULE=$(ssh -q core@"$HOST" "dmesg | grep 'TDX module'" 2>/dev/null | sed 's/.*TDX module //')
+    TDX_INIT=$(ssh -q core@"$HOST" "dmesg | grep -c 'tdx: module initialized'" 2>/dev/null)
+    if [[ -z "$TDX_MODULE" ]]; then
+      echo "  TDX module: NOT FOUND [WARNING]"
     else
-      echo "  TDX module: $TDX_MODULE"
+      TDX_VER=$(echo "$TDX_MODULE" | awk -F'[, ]' '{print $1}')
+      TDX_MIN="1.5.16"
+      if [[ "$(printf '%s\n' "$TDX_MIN" "$TDX_VER" | sort -V | head -1)" != "$TDX_MIN" ]]; then
+        echo "  TDX module: $TDX_MODULE [WARNING: below minimum $TDX_MIN]"
+      elif [[ "$TDX_INIT" -eq 0 ]]; then
+        echo "  TDX module: $TDX_MODULE [WARNING: not initialized]"
+      else
+        echo "  TDX module: $TDX_MODULE"
+      fi
     fi
+  elif [[ "$CPU_VENDOR" == "AuthenticAMD" ]]; then
+    SEV_INFO=$(ssh -q core@"$HOST" "dmesg | grep -i 'SEV-SNP'" 2>/dev/null | head -1)
+    SEV_DEV=$(ssh -q core@"$HOST" "ls /dev/sev 2>/dev/null && echo found" 2>/dev/null)
+    if [[ -n "$SEV_INFO" ]]; then
+      echo "  SEV-SNP: ${SEV_INFO##*] }"
+    elif [[ -n "$SEV_DEV" ]]; then
+      echo "  SEV: /dev/sev present"
+    else
+      echo "  SEV-SNP: NOT FOUND [WARNING]"
+    fi
+  else
+    echo "  TEE: unknown CPU vendor"
   fi
 else
   echo "  SSH to $HOST not available"
